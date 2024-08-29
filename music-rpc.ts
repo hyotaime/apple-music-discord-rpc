@@ -102,7 +102,7 @@ async function _getTrackExtras(
   album: string
 ): Promise<TrackExtras> {
   // Asterisks tend to result in no songs found, and songs are usually able to be found without it
-  const query = `${song} ${artist} ${album}`.replace("*", "");
+  const query = `${song}${artist}${album}`.replace("*", "");
   const params = new URLSearchParams({
     media: "music",
     entity: "song",
@@ -143,7 +143,6 @@ async function _getTrackExtras(
   //     album.replace(/\(.*\)$/, "").trim()
   //   );
   } else {
-    // If there are no results, try to remove album in query
     return await _getTrackExtras(
       song,
       artist,
@@ -255,7 +254,7 @@ async function setActivity(rpc: Client): Promise<number> {
 
       // album.length == 0 for radios
       if (props.album.length > 0) {
-        const buttons = [];
+        // const buttons = [];
 
         const infos = await getTrackExtras(props);
         console.log("infos:", infos);
@@ -265,12 +264,12 @@ async function setActivity(rpc: Client): Promise<number> {
           large_text: formatStr(props.album),
         };
 
-        if (infos.iTunesUrl) {
-          buttons.push({
-            label: "Play on Apple Music",
-            url: infos.iTunesUrl,
-          });
-        }
+        // if (infos.iTunesUrl) {
+        //   buttons.push({
+        //     label: "Play on Apple Music",
+        //     url: infos.iTunesUrl,
+        //   });
+        // }
 
         // const query = encodeURIComponent(
         //   `artist:${props.artist} track:${props.name}`
@@ -283,15 +282,7 @@ async function setActivity(rpc: Client): Promise<number> {
         //   });
         // }
 
-        const songwhipUrl = `https://songwhip.com/${infos.iTunesUrl}`;
-        if (songwhipUrl.length <= 512) {
-          buttons.push({
-            label: "Search on Songwhip",
-            url: songwhipUrl,
-          });
-        }
-
-        if (buttons.length > 0) activity.buttons = buttons;
+        // if (buttons.length > 0) activity.buttons = buttons;
       }
 
       await rpc.setActivity(activity);
