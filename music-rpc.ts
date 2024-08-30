@@ -115,7 +115,7 @@ async function _getTrackExtras(
     console.error("iTunes API error:", resp.statusText, url);
 
     return {
-      artworkUrl: await _getMBArtwork(artist, song, album) ?? null,
+      artworkUrl: (await _getMBArtwork(artist, song, album)) ?? null,
       iTunesUrl: null,
     };
   }
@@ -249,7 +249,7 @@ async function setActivity(rpc: Client): Promise<number> {
       };
 
       if (props.artist.length > 0) {
-        activity.state = formatStr(`by ${props.artist}`);
+        activity.state = formatStr(props.artist);
       }
 
       // album.length == 0 for radios
