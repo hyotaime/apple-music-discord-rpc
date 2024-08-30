@@ -102,7 +102,7 @@ async function _getTrackExtras(
   album: string
 ): Promise<TrackExtras> {
   // Asterisks tend to result in no songs found, and songs are usually able to be found without it
-  const query = `${song}${artist}${album}`.replace("*", "");
+  const query = `${song} ${artist} ${album}`.replace("*", "");
   const params = new URLSearchParams({
     media: "music",
     entity: "song",
@@ -134,19 +134,13 @@ async function _getTrackExtras(
         r.collectionName.toLowerCase().includes(album.toLowerCase()) &&
         r.trackName.toLowerCase().includes(song.toLowerCase())
     );
-  // } else if (album.match(/\(.*\)$/)) {
-  //   // If there are no results, try to remove the part
-  //   // of the album name in parentheses (e.g. "Album (Deluxe Edition)")
-  //   return await _getTrackExtras(
-  //     song,
-  //     artist,
-  //     album.replace(/\(.*\)$/, "").trim()
-  //   );
-  } else {
+  } else if (album.match(/\(.*\)$/)) {
+    // If there are no results, try to remove the part
+    // of the album name in parentheses (e.g. "Album (Deluxe Edition)")
     return await _getTrackExtras(
       song,
       artist,
-      ""
+      album.replace(/\(.*\)$/, "").trim()
     );
   }
 
