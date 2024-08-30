@@ -37,7 +37,7 @@ async function main(rpc: Client) {
   } catch (err) {
     console.error("Error in main loop:", err);
     await rpc.close(); // Ensure the connection is properly closed
-    
+
     console.log("Attempting to reconnect...");
     await sleep(DEFAULT_TIMEOUT); // wait before attempting to reconnect
   }
@@ -254,8 +254,6 @@ async function setActivity(rpc: Client): Promise<number> {
 
       // album.length == 0 for radios
       if (props.album.length > 0) {
-        // const buttons = [];
-
         const infos = await getTrackExtras(props);
         console.log("infos:", infos);
 
@@ -263,26 +261,6 @@ async function setActivity(rpc: Client): Promise<number> {
           large_image: infos.artworkUrl ?? "appicon",
           large_text: formatStr(props.album),
         };
-
-        // if (infos.iTunesUrl) {
-        //   buttons.push({
-        //     label: "Play on Apple Music",
-        //     url: infos.iTunesUrl,
-        //   });
-        // }
-
-        // const query = encodeURIComponent(
-        //   `artist:${props.artist} track:${props.name}`
-        // );
-        // const spotifyUrl = `https://open.spotify.com/search/${query}?si`;
-        // if (spotifyUrl.length <= 512) {
-        //   buttons.push({
-        //     label: "Search on Spotify",
-        //     url: spotifyUrl,
-        //   });
-        // }
-
-        // if (buttons.length > 0) activity.buttons = buttons;
       }
 
       await rpc.setActivity(activity);
