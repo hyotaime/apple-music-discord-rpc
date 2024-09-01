@@ -227,7 +227,7 @@ async function iTunesSearch(
     entity: "song",
     term: query,
   });
-  const url = `https://itunes.apple.com/search?${params}`;
+  const url = `https://itunes.apple.com/jp/search?${params}`;
 
   for (let i = 0; i < retryCount; i++) {
     const resp = await fetch(url);
