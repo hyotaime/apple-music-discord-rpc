@@ -17,7 +17,7 @@ class AppleMusicDiscordRPC {
     public readonly appName: iTunesAppName,
     public readonly rpc: Client,
     public readonly kv: Deno.Kv,
-    public readonly defaultTimeout: number
+    public readonly defaultTimeout: number,
   ) {}
 
   async run(): Promise<void> {
@@ -96,12 +96,36 @@ class AppleMusicDiscordRPC {
             large_image: infos.artworkUrl ?? "appicon",
             large_text: AppleMusicDiscordRPC.truncateString(props.album),
           };
+
+          const buttons = [];
+
+          if (infos.iTunesUrl) {
+            buttons.push({
+              label: "Play on Apple Music",
+              url: infos.iTunesUrl,
+            });
+          }
+
+          const query = encodeURIComponent(
+            `artist:${props.artist} track:${props.name}`,
+          );
+          const spotifyUrl = `https://open.spotify.com/search/${query}?si`;
+          if (spotifyUrl.length <= 512) {
+            buttons.push({
+              label: "Search on Spotify",
+              url: spotifyUrl,
+            });
+          }
+
+          if (buttons.length > 0) {
+            activity.buttons = buttons;
+          }
         }
 
         await this.rpc.setActivity(activity);
         return Math.min(
           (delta ?? this.defaultTimeout) + 1000,
-          this.defaultTimeout
+          this.defaultTimeout,
         );
       }
 
@@ -200,7 +224,7 @@ async function fetchTrackExtras(props: iTunesProps): Promise<TrackExtras> {
     result = json.results.find(
       (r) =>
         r.collectionName.toLowerCase().includes(props.album.toLowerCase()) &&
-        r.trackName.toLowerCase().includes(props.name.toLowerCase())
+        r.trackName.toLowerCase().includes(props.name.toLowerCase()),
     );
   } else if (props.album.match(/\(.*\)$/)) {
     // If there are no results, try to remove the part
@@ -219,7 +243,7 @@ async function fetchTrackExtras(props: iTunesProps): Promise<TrackExtras> {
 
 async function iTunesSearch(
   { name, artist, album }: iTunesProps,
-  retryCount: number = 3
+  retryCount: number = 3,
 ): Promise<iTunesSearchResponse | undefined> {
   // Asterisks tend to result in no songs found, and songs are usually able to be found without it
   const query = `${name} ${artist} ${album}`.replace("*", "");
@@ -238,7 +262,7 @@ async function iTunesSearch(
         resp.statusText,
         url,
         i + 1,
-        retryCount
+        retryCount,
       );
       resp.body?.cancel();
       await sleep(200);
@@ -258,7 +282,7 @@ async function musicBrainzArtwork({
   const queryTerms = [];
   if (!MB_EXCLUDED_NAMES.every((elem) => artist.includes(elem))) {
     queryTerms.push(
-      `artist:"${luceneEscape(removeParenthesesContent(artist))}"`
+      `artist:"${luceneEscape(removeParenthesesContent(artist))}"`,
     );
   }
   if (!MB_EXCLUDED_NAMES.every((elem) => album.includes(elem))) {
@@ -280,7 +304,7 @@ async function musicBrainzArtwork({
   for (const release of json.releases) {
     const resp = await fetch(
       `https://coverartarchive.org/release/${release.id}/front`,
-      { method: "HEAD" }
+      { method: "HEAD" },
     );
     await resp.body?.cancel();
     if (resp.ok) {
