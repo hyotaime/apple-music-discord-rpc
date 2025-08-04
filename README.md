@@ -17,7 +17,8 @@ Works with local tracks and Apple Music streaming service.
 - MusicBrainz artwork fallback
   ([#66](https://github.com/NextFire/apple-music-discord-rpc/pull/66))
 
-<img width="284" src="https://github.com/user-attachments/assets/b9ff2727-ed47-4ba7-8c0a-6b3876715f71">
+<img width="230" height="47" alt="image" src="https://github.com/user-attachments/assets/2e168586-4202-46a3-a2d5-0e4e499ecdc6" />
+<img width="296" height="128" alt="image" src="https://github.com/user-attachments/assets/d5c01904-d43e-4f10-990d-2c75ff3acc61" />
 
 ## Getting Started
 
@@ -44,6 +45,13 @@ These commands
 
 The `music-rpc.ts` executable is now also in `PATH`.
 
+#### Upgrade
+
+```
+brew upgrade apple-music-discord-rpc
+brew services restart apple-music-discord-rpc
+```
+
 #### Uninstall
 
 ```
@@ -67,6 +75,14 @@ cd apple-music-discord-rpc/
 
 It will copy the [launch agent](/scripts/moe.yuru.music-rpc.plist) into
 `~/Library/LaunchAgents/` and edit it accordingly.
+
+#### Upgrade
+
+```
+cd apple-music-discord-rpc/
+git fetch && git reset --hard origin/main
+./scripts/install.sh
+```
 
 #### Uninstall
 
